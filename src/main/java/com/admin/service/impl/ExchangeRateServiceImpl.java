@@ -3,6 +3,7 @@ package com.admin.service.impl;
 import static java.util.Comparator.comparing;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +11,6 @@ import java.util.UUID;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.NoResultException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -108,7 +108,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 
 			if (findAll.isEmpty()) {
 				log.info("Lista vacia");
-				singleSubscriber.onError(new NoResultException());
+				singleSubscriber.onSuccess(new ArrayList<>());
 			} else {
 				singleSubscriber.onSuccess(dao.findAll());
 			}

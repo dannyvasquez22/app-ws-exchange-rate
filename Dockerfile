@@ -1,5 +1,5 @@
-FROM adoptopenjdk/openjdk11:latest
+FROM openjdk:11
 VOLUME /tmp
-EXPOSE 9100
-ADD ./target/app-ws-exchange-rate-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+EXPOSE 8081
+ADD ./target/app-ws-exchange-rate-0.0.1-SNAPSHOT.jar app-ws-exchange-rate.jar
+ENTRYPOINT ["java","-jar","/app-ws-exchange-rate.jar"]

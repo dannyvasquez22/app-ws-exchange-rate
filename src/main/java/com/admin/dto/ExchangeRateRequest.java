@@ -14,4 +14,5 @@ public class ExchangeRateRequest {
 	private BigDecimal amount;
 	private String from;
 	private String to;
+	private String date;
 }

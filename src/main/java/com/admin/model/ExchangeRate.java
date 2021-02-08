@@ -24,4 +24,6 @@ public class ExchangeRate {
 	private String nameFromCurrency;
 	private String nameToCurrency;
 	private BigDecimal valueExchangeRate;
+	private String date;
+	
 }

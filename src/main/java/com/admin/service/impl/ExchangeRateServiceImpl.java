@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.admin.dao.ExchangeRateDAO;
 import com.admin.dto.ExchangeRateRequest;
 import com.admin.dto.ExchangeRateResponse;
 import com.admin.dto.ExchangeRateUpdateRequest;
@@ -24,6 +23,7 @@ import com.admin.exceptions.InvalidCurrencyException;
 import com.admin.infrastructure.gateway.CurrencyConversion;
 import com.admin.infrastructure.gateway.ExchangeRate;
 import com.admin.infrastructure.gateway.ExchangeRateGateway;
+import com.admin.repository.ExchangeRateRepository;
 import com.admin.service.ExchangeRateService;
 
 import hu.akarnokd.rxjava2.math.MathObservable;
@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ExchangeRateServiceImpl implements ExchangeRateService {
 
 	@Autowired
-	private ExchangeRateDAO dao;
+	private ExchangeRateRepository dao;
 
 	@Autowired
 	private List<ExchangeRateGateway> exchangeRateGateway;
@@ -52,8 +52,8 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 
 	private Single<String> createExchangeRateRepository(ExchangeRateRequest exchangeRate) {
 		return Single.create(singleSubscriber -> {
-			Optional<com.admin.model.ExchangeRate> element = dao
-					.fromByNameFromCurrencyAndNameToCurrency(exchangeRate.getFrom(), exchangeRate.getTo());
+//			Optional<com.admin.model.ExchangeRate> element = dao.fromByNameFromCurrencyAndNameToCurrency(exchangeRate.getFrom(), exchangeRate.getTo());
+			Optional<com.admin.model.ExchangeRate> element = dao.fromByNameFromCurrencyAndNameToCurrencyAndDate(exchangeRate.getFrom(), exchangeRate.getTo(), exchangeRate.getDate());
 			if (element.isPresent()) {
 				log.info("Elemento ya existente.");
 				singleSubscriber.onError(new EntityExistsException());
@@ -71,6 +71,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 		modelExchangeRate.setNameFromCurrency(exchangeRate.getFrom());
 		modelExchangeRate.setNameToCurrency(exchangeRate.getTo());
 		modelExchangeRate.setValueExchangeRate(exchangeRate.getAmount());
+		modelExchangeRate.setDate(exchangeRate.getDate());
 
 		return modelExchangeRate;
 	}
@@ -158,7 +159,8 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 		
 		return Single.create(singleSubscriberDb -> {
 			
-			Optional<com.admin.model.ExchangeRate> element = dao.fromByNameFromCurrencyAndNameToCurrency(request.getFrom(), request.getTo());
+//			Optional<com.admin.model.ExchangeRate> element = dao.fromByNameFromCurrencyAndNameToCurrency(request.getFrom(), request.getTo());
+			Optional<com.admin.model.ExchangeRate> element = dao.fromByNameFromCurrencyAndNameToCurrencyAndDate(request.getFrom(), request.getTo(), request.getDate());
 			
 			if (!element.isPresent()) {
 				singleSubscriberDb.onError(new EntityNotFoundException());
